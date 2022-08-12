@@ -18,31 +18,36 @@ class Student:
 		else:
 			return 'Ошибка'
 
-	def avg_grade(self):
+	def __avg_grade(self):
 		self.list_grades = [grade for grades in self.grades.values() for grade in grades]
-		self.average_grade = sum(self.list_grades) / len(self.list_grades)
-		return self.average_grade
+		if self.list_grades:
+			self.average_grade = sum(self.list_grades) / len(self.list_grades)
+			return self.average_grade
+
+	def __check_other(self, other):
+		if not isinstance(other, Student):
+			print('Сравнивать можно только студентов')
+			return False
+		else:
+			return True
 
 	def __str__(self):
-		return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка: {self.avg_grade()} \nКурсы в процессе изучения: {", ".join(self.courses_in_progress)} \nЗавершенные курсы: {", ".join(self.finished_courses)}'
+		return (f'Имя: {self.name} \nФамилия: {self.surname}'
+				f'\nСредняя оценка: {self.__avg_grade()}'
+				f'\nКурсы в процессе изучения: {", ".join(self.courses_in_progress)}'
+				f'\nЗавершенные курсы: {", ".join(self.finished_courses)}')
 
 	def __gt__(self, other):
-		if not isinstance(other, Student):
-			print('Сравнивать можно только студентов')
-			return
-		return self.avg_grade() > other.avg_grade()
+		if self.__check_other(other):
+			return self.__avg_grade() > other.__avg_grade()
 
 	def __eq__(self, other):
-		if not isinstance(other, Student):
-			print('Сравнивать можно только студентов')
-			return
-		return self.avg_grade() == other.avg_grade()
+		if self.__check_other(other):
+			return self.__avg_grade() == other.__avg_grade()
 
 	def __le__(self, other):
-		if not isinstance(other, Student):
-			print('Сравнивать можно только студентов')
-			return
-		return self.avg_grade() <= other.avg_grade()
+		if self.__check_other(other):
+			return self.__avg_grade() <= other.__avg_grade()
 
 
 class Mentor:
@@ -57,31 +62,33 @@ class Lecturer(Mentor):
 		super().__init__(name, surname)
 		self.grades = {}
 
-	def avg_grade(self):
+	def __avg_grade(self):
 		self.list_grades = [grade for grades in self.grades.values() for grade in grades]
-		self.average_grade = sum(self.list_grades) / len(self.list_grades)
-		return self.average_grade
+		if self.list_grades:
+			self.average_grade = sum(self.list_grades) / len(self.list_grades)
+			return self.average_grade
+
+	def __check_other(self, other):
+		if not isinstance(other, Lecturer):
+			print('Сравнивать можно только лекторов')
+			return False
+		else:
+			return True
 
 	def __str__(self):
-		return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка: {self.avg_grade()}'
+		return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка: {self.__avg_grade()}'
 
 	def __gt__(self, other):
-		if not isinstance(other, Lecturer):
-			print('Сравнивать можно только лекторов')
-			return
-		return self.avg_grade() > other.avg_grade()
+		if self.__check_other(other):
+			return self.__avg_grade() > other.__avg_grade()
 
 	def __eq__(self, other):
-		if not isinstance(other, Lecturer):
-			print('Сравнивать можно только лекторов')
-			return
-		return self.avg_grade() == other.avg_grade()
+		if self.__check_other(other):
+			return self.__avg_grade() == other.__avg_grade()
 
 	def __le__(self, other):
-		if not isinstance(other, Lecturer):
-			print('Сравнивать можно только лекторов')
-			return
-		return self.avg_grade() <= other.avg_grade()
+		if self.__check_other(other):
+			return self.__avg_grade() <= other.__avg_grade()
 
 
 class Reviewer(Mentor):
@@ -168,7 +175,3 @@ def avg_course_grade_lecturer(lecturers, course):
 			return sum(avg_course_grade) / len(avg_course_grade)
 	else:
 		return 'Ошибка! Кто-то не Лектор!'
-
-
-print(avg_course_grade_students([student1, student2, student3], 'python'))
-print(avg_course_grade_lecturer([lecturer, lecturer2, lecturer3], 'python'))
